@@ -129,18 +129,73 @@ input[type=text] {
     margin: 8px 20px;
     box-sizing: border-box;
     border: 2px solid #816325;
-    border-radius: 10px;
+    border-radius: 20px;
     font-family: "Quicksand", sans-serif;
     color: #4d4d4d;
     font-size: 15px;
 }
 
-input[type=text]:hover {
+input[type=text]:hover,input[type=text]:focus {
     transition: all .5s ease-in-out;
     box-shadow: 1px 3px 5px #aca496;
+    outline: none;
 }
 
 
 form{
     margin-top: 20px;
+}
+
+#editModal
+{
+    width: 60%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px !important;
+    box-shadow: 1px 3px 5px #aca496;
+}
+
+#overviewModal
+{
+    width: 50%;
+    height: 30%;
+    margin: auto;
+    border-radius: 15px !important;
+    box-shadow: 1px 3px 5px #aca496;
+}
+
+
+#closeModal {
+    border: none;
+    outline: none;
+    font-size: 20px;
+    font-family: "Quicksand", sans-serif;
+    /* color: #4caf50; */
+    padding: 3px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 0 5px;
+    /* border: 1px solid #4caf50; */
+    background-color: transparent;
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+/* Placeholder css */
+::-webkit-input-placeholder {
+    text-align: center;
+}
+ 
+ :-moz-placeholder { /* Firefox 18- */
+    text-align: center;  
+}
+ 
+ ::-moz-placeholder {  /* Firefox 19+ */
+    text-align: center;  
+}
+ 
+ :-ms-input-placeholder {  
+    text-align: center; 
 }

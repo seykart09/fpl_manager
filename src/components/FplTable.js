@@ -3,21 +3,25 @@ import MOCK_DATA from './MOCK_DATA.json'
 import { COLUMNS } from './columns'
 import '../css/styles.css'
 import HandleMangers from './HandleMangers'
+import { OverviewModal } from './OverviewModal'
+import { EditModal } from './EditModal'
 
 
 export const FplTable = () => {
     const API_DATA = MOCK_DATA
-    const API = 'https://api.github.com/users/hacktivist123/repos';
+    const API = 'https://run.mocky.io/v3/a8f4f5d6-3b59-4a55-893f-007d145b2f80';
 
     const [info, setInfo] = useState(API_DATA)
-    const [showResults, setShowResults] = React.useState(false)
-    const onClick = () => setShowResults(!showResults)
+    const [showAddUI, setshowAddUI] = useState(false)
+    const [currentlySelected, setCurrentlySelected] = useState(null)
+    const [dataSelected, setDataSelected] = useState(null)
+    const onClick = () => setshowAddUI(!showAddUI)
 
-    // componentDidMount() {
-    //     fetch(API)
-    //       .then((response) => response.json())
-    //       .then((data) => console.log('This is your data', data));
-    // }
+    const componentDidMount = () => {
+        fetch(API)
+          .then((response) => response.json())
+          .then((data) => console.log('This is your data', data));
+    }
 
     const tableHeader = () => {
         const headerItems = COLUMNS
@@ -45,8 +49,8 @@ export const FplTable = () => {
                     {/* <td>N/A</td> */}
                     <td>{data.sum}</td>
                     <td className='opration'>
-                        <button className='actions' title="Overview"><i className="fa fa-ellipsis-v"></i></button>
-                        <button className='edit' title="Edit"><i className="fa fa-edit"></i></button>
+                        <button className='actions' title="Overview" onClick={() => overviewData(data.teamId)}><i className="fa fa-ellipsis-v"></i></button>
+                        <button className='edit' title="Edit" onClick={() => editData(data.teamId)}><i className="fa fa-edit"></i></button>
                         <button className='button' title="Delete" onClick={() => removeData(data.teamId)}><i className="fa fa-trash"></i></button>
                     </td>
                 </tr>
@@ -55,9 +59,27 @@ export const FplTable = () => {
     }
 
     const removeData = (id) => {
-        console.log(id)
+        const find = info.filter(data => id !== data.teamId)
+        setInfo(find)
+    }
+
+    const overviewData = (id) => {
+        const find = info.filter(data => id == data.teamId)
+        setCurrentlySelected(find[0].points)
+    }
+
+    const editData = (id) => {
         const find = info.filter(data => id == data.teamId)
         console.log(find)
+        setDataSelected(find)
+    }
+
+    const generateID = () => {
+        const min = 1
+        const max = 10000000
+        const rand = Math.floor(Math.random()*(max-min+1)+min)
+
+        console.log(rand)
     }
 
 
@@ -75,8 +97,10 @@ export const FplTable = () => {
                 </tbody>
             </table>
             <button className='manager_btn' onClick={onClick}>Add Manager</button>
-            { showResults ? <HandleMangers/> : null }
-            
+            { showAddUI ? <HandleMangers/> : null }
+            { currentlySelected == null ? null : <OverviewModal onCloseButtonClick={() => setCurrentlySelected(null)} scores={currentlySelected}/>}
+            { dataSelected == null ? null : <EditModal onCloseButtonClick={() => setDataSelected(null)} data={dataSelected}/>}
+            {/* <EditModal/> */}
         </div>
     )
 }
