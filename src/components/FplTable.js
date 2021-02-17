@@ -1,27 +1,33 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import MOCK_DATA from './MOCK_DATA.json'
 import { COLUMNS } from './columns'
 import '../css/styles.css'
 import HandleMangers from './HandleMangers'
 import { OverviewModal } from './OverviewModal'
-import { EditModal } from './EditModal'
+import EditModal  from './EditModal'
 
 
 export const FplTable = () => {
-    const API_DATA = MOCK_DATA
     const API = 'https://run.mocky.io/v3/a8f4f5d6-3b59-4a55-893f-007d145b2f80';
 
-    const [info, setInfo] = useState(API_DATA)
+    // window.localStorage.clear()
+    let cachedData = JSON.parse(window.localStorage.getItem('data'))
+
+    useEffect(() => {
+        if(cachedData == null){
+            fetch(API)
+            .then((response) => response.json())
+            .then((data) => window.localStorage.setItem('data', JSON.stringify(data)));      
+        }
+    }, [])
+
+    cachedData = JSON.parse(window.localStorage.getItem('data'))
+
+    const [info, setInfo] = useState(cachedData)
     const [showAddUI, setshowAddUI] = useState(false)
     const [currentlySelected, setCurrentlySelected] = useState(null)
     const [dataSelected, setDataSelected] = useState(null)
     const onClick = () => setshowAddUI(!showAddUI)
-
-    const componentDidMount = () => {
-        fetch(API)
-          .then((response) => response.json())
-          .then((data) => console.log('This is your data', data));
-    }
 
     const tableHeader = () => {
         const headerItems = COLUMNS
@@ -33,20 +39,24 @@ export const FplTable = () => {
     const tableBody = () => {
         return info.map(data =>  {
             let score = 0;
-            data.points.forEach(element => score += element.points)
+            if(data.points.length != 0)
+            {
+                data.points.forEach(element => score += element.points)
+            }
+
             data.sum = score
+
             if(data.teamNickname == undefined)
             {
                 data.teamNickname ="N/A"
             }
+
             return (
                 <tr key={data.teamId}>
                     <td>{data.teamId}</td>
                     <td>{data.teamName}</td>
                     <td>{data.managerName}</td>
-                    {/* "teamNickname" in data? */}
                     <td>{data.teamNickname}</td>
-                    {/* <td>N/A</td> */}
                     <td>{data.sum}</td>
                     <td className='opration'>
                         <button className='actions' title="Overview" onClick={() => overviewData(data.teamId)}><i className="fa fa-ellipsis-v"></i></button>
@@ -60,6 +70,8 @@ export const FplTable = () => {
 
     const removeData = (id) => {
         const find = info.filter(data => id !== data.teamId)
+        var new_cache = cachedData.filter(data => id !== data.teamId)
+        window.localStorage.setItem('data', JSON.stringify(new_cache))
         setInfo(find)
     }
 
@@ -70,16 +82,7 @@ export const FplTable = () => {
 
     const editData = (id) => {
         const find = info.filter(data => id == data.teamId)
-        console.log(find)
         setDataSelected(find)
-    }
-
-    const generateID = () => {
-        const min = 1
-        const max = 10000000
-        const rand = Math.floor(Math.random()*(max-min+1)+min)
-
-        console.log(rand)
     }
 
 

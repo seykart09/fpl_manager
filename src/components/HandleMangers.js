@@ -11,7 +11,9 @@ class HandleMangers extends Component {
              managerName:'',
              teamNickname:''
         }
+        
     }
+
 
     handleTeamNameChange = (event) => {
         this.setState({
@@ -32,9 +34,22 @@ class HandleMangers extends Component {
     }
 
     handleSubmit = event => {
-        event.preventDefault()
-        alert(`${this.state.teamName} ${this.state.managerName} ${this.state.teamNickname}`)
+        const teamId = this.generateID()
+        const formData = {"teamId":teamId,"teamName":this.state.teamName,"managerName":this.state.managerName,"teamNickname":this.state.teamNickname,"points":[]}
+        let initData = JSON.parse(window.localStorage.getItem('data'))
+        initData.push(formData)
+
+        window.localStorage.setItem('data', JSON.stringify(initData))
     }
+
+    generateID = () => {
+        const min = 1
+        const max = 10000000
+        const rand = Math.floor(Math.random()*(max-min+1)+min)
+
+        return rand
+    }
+
     
     render() {
         const {teamName, managerName, teamNickname} = this.state

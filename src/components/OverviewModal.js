@@ -15,7 +15,7 @@ export const OverviewModal = props => {
                 }}>
                 <div>
                     <h2>Score Breakdown Weekly</h2>
-                    {props.scores.map(data => { return (<p key={data.gameWeek}> Gameweek {data.gameWeek} : {data.points} points</p>)})}
+                    {props.scores.length == 0 ? <p>No points allocated to this Manager</p> : props.scores.map(data => { return (<p key={data.gameWeek}> Gameweek {data.gameWeek} : {data.points} points</p>)})}
                 </div>
                 <div>
                     <button title="Close" onClick={props.onCloseButtonClick} id="closeModal"><i className="fa fa-close"></i>
